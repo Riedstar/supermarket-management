@@ -1,60 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Dashboard</title>
+    <title>Supermarket Dashboard</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.5.1/css/all.min.css}">
+    <style>
+        body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; }
+        .container { max-width: 1200px; margin-top: 20px; }
+        .header { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .btn-modern { background: linear-gradient(45deg, #0f3460, #e94560); border: none; border-radius: 25px; padding: 10px 20px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); color: white; text-decoration: none; }
+        .btn-modern:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.3); color: white; }
+        .product-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 15px; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1); opacity: 0; transform: translateY(20px); animation: fadeInUp 0.6s ease forwards; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+        .product-card:nth-child(odd) { animation-delay: 0.1s; }
+        .product-card:nth-child(even) { animation-delay: 0.2s; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .low-stock { color: #e94560; font-weight: bold; }
+        .logout { background: #6c757d; border-radius: 25px; }
+        .btn-group .btn { margin-right: 5px; }
+        .add-btn { background: linear-gradient(45deg, #28a745, #20c997); }
+    </style>
 </head>
-<body class="container mt-4">
-    <div class="row">
-        <div class="col">
-            <h1>Supermarket Dashboard</h1>
-            <p>Welcome! Manage inventory, sales, etc. here.</p>
-            <a href="/logout" class="btn btn-secondary float-end">Logout</a>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="text-center mb-3">Supermarket Dashboard</h1>
+            <p class="text-center">Welcome! Manage inventory, sales, etc. here.</p>
+            <a href="/logout" class="btn btn-modern logout float-end">Logout <i class="fas fa-sign-out-alt"></i></a>
         </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col">
-            <a href="/add-product" class="btn btn-success">Add New Product</a>
-            <a href="/reports" class="btn btn-info ms-2">Reports</a>
-            <a href="/cart" class="btn btn-primary ms-2">Cart</a>
+
+        <div class="row mb-3">
+            <div class="col">
+                <a href="/add-product" class="btn btn-modern add-btn">Add New Product <i class="fas fa-plus"></i></a>
+                <a href="/reports" class="btn btn-modern">Reports <i class="fas fa-chart-bar"></i></a>
+                <a href="/cart" class="btn btn-modern">Cart <i class="fas fa-shopping-cart"></i></a>
+            </div>
         </div>
-    </div>
-    <h2>Current Inventory</h2>
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Category</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="product : ${products}">
-                <td th:text="${product.id}"></td>
-                <td th:text="${product.name}"></td>
-                <td th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></td>
-                <td th:text="${product.quantity}"></td>
-                <td th:text="${product.category != null ? product.category.name : 'No Category'}"></td>
-                <td>
+
+        <h2 class="mb-3">Current Inventory</h2>
+        <div th:if="${products.isEmpty()}" class="alert alert-warning">
+            No products yet. <a href="/add-product">Add one!</a>
+        </div>
+        <div th:if="${!products.isEmpty()}">
+            <div th:each="product : ${products}" class="row product-card">
+                <div class="col-md-8">
+                    <h5 th:text="${product.name}"></h5>
+                    <p><strong>Price:</strong> $ <span th:text="$$ {product.price}"></span> | <strong>Category:</strong> <span th:text=" $${product.category != null ? product.category.name : 'No Category'}"></span></p>
+                </div>
+                <div class="col-md-4 text-end">
                     <div class="btn-group">
-                        <a th:href="@{/edit-product/{id}(id=${product.id})}" class="btn btn-sm btn-primary">Edit</a>
-                        <a th:href="@{/delete-product/{id}(id=${product.id})}" class="btn btn-sm btn-danger"
-                           onclick="return confirm('Delete this product?')">Delete</a>
+                        <a th:href="@{/edit-product/{id}(id=${product.id})}" class="btn btn-sm btn-modern">Edit <i class="fas fa-edit"></i></a>
+                        <a th:href="@{/delete-product/{id}(id=${product.id})}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this product?')"><i class="fas fa-trash"></i></a>
                         <form th:action="@{/add-to-cart/{id}(id=${product.id})}" method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-sm btn-outline-success">Add to Cart</button>
+                            <button type="submit" class="btn btn-sm btn-outline-light">Add to Cart <i class="fas fa-cart-plus"></i></button>
                         </form>
                     </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div th:if="${products.isEmpty()}" class="alert alert-info">
-        No products yet. <a href="/add-product">Add one!</a>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
