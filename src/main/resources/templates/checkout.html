@@ -5,90 +5,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.5.1/css/all.min.css}">
     <style>
-        body.bg-light {
-            background-color: #f8f9fa;
-        }
-        .card {
-            border-radius: 16px;
-        }
-        .btn {
-            min-width: 140px;
-        }
+        body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; }
+        .container { max-width: 600px; margin-top: 20px; }
+        .checkout-header { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid rgba(255,255,255,0.1); padding: 12px; text-align: left; }
+        th { background-color: rgba(255,255,255,0.05); }
+        .total-card { background: rgba(32,201,151,0.1); border-radius: 15px; padding: 20px; margin-top: 20px; text-align: center; font-size: 1.5em; font-weight: bold; color: #20c997; }
+        .btn-complete { background: linear-gradient(45deg, #28a745, #20c997); border: none; border-radius: 25px; padding: 15px 30px; font-size: 1.2em; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(40,167,69,0.3); color: white; width: 100%; }
+        .btn-complete:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(40,167,69,0.4); }
+        .back-btn { background: #6c757d; border-radius: 25px; padding: 10px 20px; color: white; text-decoration: none; margin-left: 10px; transition: all 0.3s ease; }
+        .back-btn:hover { background: #5a6268; transform: translateY(-2px); }
+        .toast-success { background: rgba(40,167,69,0.9); color: white; border-radius: 10px; padding: 15px; margin-top: 20px; animation: slideIn 0.5s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
+<body>
+    <div class="container">
+        <div class="checkout-header">
+            <h1 class="mb-3"><i class="fas fa-credit-card me-2"></i>Checkout</h1>
+            <a href="/cart" class="back-btn">Back to Cart</a>
+        </div>
 
-<body class="bg-light">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cart}">
+                    <td th:text="${item.name}"></td>
+                    <td>$ <span th:text="${item.price}"></span></td>
+                </tr>
+            </tbody>
+        </table>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="total-card">
+            Total: $ <span th:text="${total}"></span>
+        </div>
 
-            <!-- Card -->
-            <div class="card shadow-lg">
-                <div class="card-header bg-dark text-white">
-                    <h3 class="mb-0">Checkout</h3>
-                </div>
+        <div class="text-center mt-4">
+            <form method="post">
+                <button type="submit" class="btn btn-complete">Complete Purchase <i class="fas fa-check-circle ms-2"></i></button>
+            </form>
+        </div>
 
-                <div class="card-body">
-
-                    <!-- Empty cart check -->
-                    <div th:if="${cart.isEmpty()}" class="alert alert-info text-center">
-                        Your cart is empty. <a th:href="@{/dashboard}">Go back</a>.
-                    </div>
-
-                    <!-- Items Table -->
-                    <div th:if="${!cart.isEmpty()}">
-                        <table class="table table-striped table-hover">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Price (R)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="item : ${cart}">
-                                    <td th:text="${item.name}">Product Name</td>
-                                    <td th:text="${#numbers.formatDecimal(item.price, 1, 2)}">0.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <!-- Total -->
-                        <div class="d-flex justify-content-between mt-3">
-                            <h5 class="fw-bold">Total:</h5>
-                            <h5 class="fw-bold">R <span th:text="${#numbers.formatDecimal(total, 1, 2)}">0.00</span></h5>
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="mt-4 d-flex justify-content-between flex-wrap gap-2">
-
-                            <!-- Back to Cart -->
-                            <a th:href="@{/cart}" class="btn btn-outline-secondary">
-                                ⬅ Back to Cart
-                            </a>
-
-                            <!-- Continue Shopping -->
-                            <a th:href="@{/dashboard}" class="btn btn-outline-primary">
-                                Continue Shopping
-                            </a>
-
-                            <!-- Complete Purchase -->
-                            <form th:action="@{/complete-purchase}" method="post" style="display:inline-block;">
-                                <button type="submit" class="btn btn-success px-4">
-                                    Complete Purchase ✔
-                                </button>
-                            </form>
-
-                        </div>
-                    </div>
-
-                </div> <!-- card-body -->
-
-            </div> <!-- card -->
+        <div th:if="${message}" class="toast-success">
+            <i class="fas fa-check-circle me-2"></i> <span th:text="${message}"></span>
         </div>
     </div>
-</div>
 
+    <script>
+        // Success toast animation (optional)
+        if (document.querySelector('.toast-success')) {
+            setTimeout(() => {
+                document.querySelector('.toast-success').style.display = 'none';
+            }, 3000);
+        }
+    </script>
 </body>
 </html>

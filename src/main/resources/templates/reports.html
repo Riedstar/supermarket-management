@@ -13,15 +13,19 @@
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid rgba(255,255,255,0.1); padding: 12px; text-align: left; }
         th { background-color: rgba(255,255,255,0.05); }
+        .low-stock-row { background: rgba(233,69,96,0.1); }
         .low-stock { color: #e94560; font-weight: bold; }
-        .no-data { text-align: center; padding: 40px; background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .no-data { text-align: center; padding: 40px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-top: 20px; animation: fadeIn 0.8s ease; }
+        .back-btn { background: #6c757d; border-radius: 25px; padding: 10px 20px; color: white; text-decoration: none; transition: all 0.3s ease; }
+        .back-btn:hover { background: #5a6268; transform: translateY(-2px); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="report-header">
             <h1><i class="fas fa-chart-bar me-2"></i>Low Stock Report</h1>
-            <a href="/dashboard" class="btn btn-modern">Back to Dashboard</a>
+            <a href="/dashboard" class="back-btn">Back to Dashboard <i class="fas fa-arrow-left ms-2"></i></a>
         </div>
 
         <div th:if="${lowStock.isEmpty()}" class="no-data">
@@ -38,7 +42,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="item : ${lowStock}">
+                    <tr th:each="item : ${lowStock}" class="low-stock-row">
                         <td th:text="${item.name}"></td>
                         <td class="low-stock" th:text="${item.quantity}"></td>
                     </tr>
