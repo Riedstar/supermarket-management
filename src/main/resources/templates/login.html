@@ -1,39 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Supermarket Login</title>
+    <title>Login - Supermarket Management</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.5.1/css/all.min.css}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 400px;
-            margin: 100px auto;
-            padding: 20px;
-        }
-        form { display: flex; flex-direction: column; }
-        input { margin-bottom: 10px; padding: 8px; }
-        button {
-            padding: 10px;
-            background: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .error { color: red; }
-        .success { color: green; }
+        body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 40px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); width: 100%; max-width: 400px; animation: fadeIn 0.8s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-login { background: linear-gradient(45deg, #0f3460, #e94560); border: none; border-radius: 25px; padding: 12px; width: 100%; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .btn-login:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .error { color: #e94560; text-align: center; margin-bottom: 20px; }
+        .form-control { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: #fff; }
+        .form-control::placeholder { color: rgba(255,255,255,0.6); }
+        .form-control:focus { background: rgba(255,255,255,0.15); border-color: #0f3460; box-shadow: 0 0 0 0.2rem rgba(15,52,96,0.25); color: #fff; }
     </style>
 </head>
 <body>
-    <h2>Login to Supermarket Management</h2>
-    <div th:if="${param.error}" class="error">Invalid username or password.</div>
-    <div th:if="${param.logout}" class="success">You have been logged out.</div>
-    <form th:action="@{/login}" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required />
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
-        <button type="submit">Login</button>
-    </form>
+    <div class="login-card">
+        <h2 class="text-center mb-4"><i class="fas fa-shopping-cart me-2"></i>Login</h2>
+        
+        <div th:if="${param.error}" class="error alert alert-danger">
+            Invalid username or password.
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success">
+            You have been logged out.
+        </div>
+        
+        <form th:action="@{/login}" method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required />
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required />
+            </div>
+            
+            <button type="submit" class="btn btn-login">Login <i class="fas fa-sign-in-alt ms-2"></i></button>
+        </form>
+        
+        <p class="text-center mt-3 small">Test: admin / password</p>
+    </div>
 </body>
 </html>

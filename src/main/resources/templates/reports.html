@@ -1,89 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>Reports</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Low Stock Report</title>
-
-    <!-- Bootstrap -->
-    <link rel="stylesheet" 
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.5.1/css/all.min.css}">
     <style>
-        body {
-            background-color: #f5f6fa;
-        }
-
-        .report-container {
-            max-width: 900px;
-            margin: 40px auto;
-        }
-
-        .card {
-            border-radius: 16px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-        }
-
-        .table thead {
-            background-color: #343a40;
-            color: white;
-        }
-
-        .btn-back {
-            border-radius: 50px;
-            padding: 10px 25px;
-        }
-
-        h2 {
-            font-weight: 700;
-        }
+        body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; }
+        .container { max-width: 800px; margin-top: 20px; }
+        .report-header { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid rgba(255,255,255,0.1); padding: 12px; text-align: left; }
+        th { background-color: rgba(255,255,255,0.05); }
+        .low-stock { color: #e94560; font-weight: bold; }
+        .no-data { text-align: center; padding: 40px; background: rgba(255,255,255,0.05); border-radius: 10px; }
     </style>
 </head>
-
 <body>
-    <div class="container report-container">
-        <div class="card p-4">
-            <h2 class="text-center mb-4">📉 Low Stock Report</h2>
+    <div class="container">
+        <div class="report-header">
+            <h1><i class="fas fa-chart-bar me-2"></i>Low Stock Report</h1>
+            <a href="/dashboard" class="btn btn-modern">Back to Dashboard</a>
+        </div>
 
-            <div class="table-responsive">
-                <table class="table table-striped table-hover text-center">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Dynamic rows using Thymeleaf -->
-                        <tr th:each="product : ${lowStockProducts}">
-                            <td th:text="${product.name}">Milk</td>
-                            <td th:text="${product.quantity}">0</td>
-                        </tr>
+        <div th:if="${lowStock.isEmpty()}" class="no-data">
+            <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+            <p>No low stock items! Everything's stocked.</p>
+        </div>
 
-                        <!-- Optional: fallback static rows if no dynamic data -->
-                        <tr th:if="${#lists.isEmpty(lowStockProducts)}">
-                            <td>Milk</td>
-                            <td>0</td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(lowStockProducts)}">
-                            <td>Apple</td>
-                            <td>0</td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(lowStockProducts)}">
-                            <td>Banana</td>
-                            <td>0</td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(lowStockProducts)}">
-                            <td>Orange</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="text-center mt-3">
-                <a th:href="@{/dashboard}" class="btn btn-dark btn-back">⬅ Back</a>
-            </div>
+        <div th:if="${!lowStock.isEmpty()}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${lowStock}">
+                        <td th:text="${item.name}"></td>
+                        <td class="low-stock" th:text="${item.quantity}"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </body>
