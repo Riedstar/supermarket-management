@@ -4,8 +4,12 @@
     <title>Supermarket Dashboard</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.5.1/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.5.1/css/all.min.css}" />
+    <script>
+        console.log('Bootstrap loaded?');
+        document.addEventListener('DOMContentLoaded', () => console.log('Dashboard ready'));
+    </script>
     <style>
         body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; }
         .container { max-width: 1200px; margin-top: 20px; }
@@ -20,7 +24,7 @@
         .logout { background: #6c757d; border-radius: 25px; }
         .btn-group .btn { margin-right: 5px; }
         .add-btn { background: linear-gradient(45deg, #28a745, #20c997); }
-        .low-stock { color: #e94560; font-weight: bold; }
+        .no-category { color: #999; font-style: italic; }
     </style>
 </head>
 <body>
@@ -47,7 +51,7 @@
             <div th:each="product : ${products}" class="row product-card">
                 <div class="col-md-8">
                     <h5 th:text="${product.name}"></h5>
-                    <p><strong>Price:</strong> $ <span th:text="${product.price}"></span> | <strong>Category:</strong> <span th:text="${product.category != null ? product.category.name : 'No Category'}"></span></p>
+                    <p><strong>Price:</strong> $ <span th:text="${product.price}"></span> | <strong>Category:</strong> <span th:text="${product.category != null ? product.category.name : 'No Category'}" class="no-category"></span></p>
                 </div>
                 <div class="col-md-4 text-end">
                     <div class="btn-group">
