@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.category")  // LEFT JOIN handles null categories
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.category")  // LEFT JOIN for null-safe categories
     List<Product> findAllWithCategory();
 
     @Query("SELECT p FROM Product p WHERE p.quantity < 10")

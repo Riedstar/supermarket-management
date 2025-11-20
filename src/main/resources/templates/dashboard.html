@@ -17,10 +17,10 @@
         .product-card:nth-child(odd) { animation-delay: 0.1s; }
         .product-card:nth-child(even) { animation-delay: 0.2s; }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-        .low-stock { color: #e94560; font-weight: bold; }
         .logout { background: #6c757d; border-radius: 25px; }
         .btn-group .btn { margin-right: 5px; }
         .add-btn { background: linear-gradient(45deg, #28a745, #20c997); }
+        .low-stock { color: #e94560; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -47,7 +47,7 @@
             <div th:each="product : ${products}" class="row product-card">
                 <div class="col-md-8">
                     <h5 th:text="${product.name}"></h5>
-                    <p><strong>Price:</strong> $ <span th:text="$$ {product.price}"></span> | <strong>Category:</strong> <span th:text=" $${product.category != null ? product.category.name : 'No Category'}"></span></p>
+                    <p><strong>Price:</strong> $ <span th:text="${product.price}"></span> | <strong>Category:</strong> <span th:text="${product.category != null ? product.category.name : 'No Category'}"></span></p>
                 </div>
                 <div class="col-md-4 text-end">
                     <div class="btn-group">
